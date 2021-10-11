@@ -1,6 +1,7 @@
 #include "../include/process_input.h"
 #include "../include/constants.h"
 #include "../include/globals.h"
+#include "../include/chip8_keyboard.h"
 
 
 void process_input(void)
@@ -9,25 +10,28 @@ void process_input(void)
 
     while(SDL_PollEvent(&event))
     {
-        if (event.type == SDL_QUIT)
+        switch (event.type)
         {
-            game_is_running = FALSE;
-            return;
-        }
-        else if (event.type == SDL_KEYUP)
-        {
-            printf("\nKey is up.");
-        }
-        else if (event.type == SDL_KEYDOWN)
-        {
-            printf("\nKey is down.");
-            switch (event.key.keysym.sym)
+            case SDL_QUIT:
             {
-                case SDLK_ESCAPE:
-                    game_is_running = FALSE;
-                    break;
-                default:;
+                game_is_running = FALSE;
+                return;
+                break;
             }
+            case SDL_KEYUP:
+            {
+                printf("\nKey is up.");
+                break;
+            }
+            case SDL_KEYDOWN:
+            {
+                char key = event.key.keysym.sym;
+                int vkey = chip8_keyboard_map(keyboard_map, key);
+                printf("\nKey is down: %c", key);
+
+                break;
+            }
+
         }
     }
 }
